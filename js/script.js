@@ -52,6 +52,7 @@ function decTimer(timerVal) {
     }
 }
 // function getQuestion(){}
+  
 var createQuestionEl = function createQuestionEl(QuestionDataObj) {
     var listItemEl = document.createElement("li");
     var questionFormEl = document.createElement("form");
@@ -91,10 +92,11 @@ function StartQuiz() {
     // startEl.removeEventListener()
     var timeRemaining = QUIZ_TIME_INIT;
     // containerEl.innerHTML = '';
-    var questionEl = document.createElement("h2");
-    questionEl.setAttribute('style', 'font-size:25px; text-align:center;');
-    var qidx=0;
-    choicesEl = document.createElement("div");
+    var qidx=1;
+    var questionEl = document.createElement("h4");
+    //questionEl.setAttribute('style', );
+    
+    choicesEl = document.createElement("form");
     var choiceElA = document.createElement("button");
     var choiceElB = document.createElement("button");
     var choiceElC = document.createElement("button");
@@ -108,7 +110,6 @@ function StartQuiz() {
     questionEl.textContent = QuestionArray[qidx]['q'];
     
     containerEl.appendChild(questionEl);
-
     containerEl.appendChild(choicesEl);
     choicesEl.appendChild(choiceElA);
     choicesEl.appendChild(choiceElB);
