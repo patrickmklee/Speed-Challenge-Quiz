@@ -14,19 +14,21 @@
         </nav>
         <h3>Time Left: <span id="timer">75</span></h3>
     </header>
-    
     <div class="container">
     <section id="interact"> 
-    <h2 id="welcome">Welcome to Speed Quiz</h2>
-    <div>Press 'Start' to begin</div>
-    <button id="start">Start</button>
-    </section>
-
-    <section id="question-wrap" class="page-wrapper">
-            <h2 id="question-text"></h2>
-            <ul id="answer-options"></ul>
-    </section>
+        <h2 id="welcome">Welcome to Speed Quiz</h2>
+        <p>Press 'Start' to begin</p>
+    
+    <div><button id="start">Start</button></div>
+</section>
+<!-- </div> -->
+    
+    <div id="quiz-content" class="page-wrapper">
+        <div id="quiz-question"></div>
     </div>
+    </div>
+    <span id="scoreValue" class="hidden"></span>
+    
     
     <!-- <div id="reactive" class="container"> -->
     <!-- </div> -->
@@ -39,6 +41,7 @@
           <li class="choices"><button id="choiced"></button></li>
           </ul>
         </div> -->
+    <!-- <footer><p id=log></p></footer> -->
     <script src="./js/script.js"></script>
 </body>
 
