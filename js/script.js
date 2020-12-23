@@ -254,20 +254,7 @@ function StartQuiz() {
     return 0;
     // return (timeRemaining === undefined);
 }
-//function init(){
-startEl.addEventListener('click', function() {
-    // containerEl.innerHTML="";
-    // StartQuiz();
-    console.log("start");
-    // taskQuestionHandler;
-}
-);
-    // if (StartQuiz() === 1){
-    //     console.log("Done StartEl click")
-    //     }
-    // }
-// DEBUGGING
-// Event.matches()3
+
 function eventDelegator(event) {
     if (!(event.target.matches('.btn-choice')||event.target.matches('#start'))) return
     let questionObj = QuestionArray.pop();
