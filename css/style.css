@@ -89,7 +89,7 @@ nav {
     flex-direction: column;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     text-align: center;
-    position: relative;
+    position: relative; 
     /* text-align: justify; */
     /* justify-content: start; */
 }

@@ -8,8 +8,8 @@ var QuestionArray = [ {
     { 
     qid : 1,
     q: "CSS is an acronym for",
-    a: ["Cascading Style Sheets", 'Custom Style Sheets', 'Colored Silly Socks', 'Cascaded Style Sheet'],
-    correctAnswerId : 0
+    a: [ 'Custom Style Sheets', 'Cascading Style Sheets', 'Colored Silly Socks', 'Cascaded Style Sheet'],
+    correctAnswerId : 1
     },
     { 
     qid : 2,
@@ -20,7 +20,7 @@ var QuestionArray = [ {
 ];
 
 
-const QUIZ_TIME_INIT = 15;
+const QUIZ_TIME_INIT = 45;
 const NUM_QUESTIONS = 3;
 //const 
 var questionsRemaining = 3;
@@ -35,7 +35,8 @@ var questionsRemaining = 3;
 var quizContentEl = document.getElementById('quiz-content');
 var questionEl = document.getElementById("question-wrap");
 var answerOptionsEl = document.getElementById("answer-options");
-var containerEl = document.getElementById("interact");
+var containerEl = document.querySelector("#main-content");
+var interactEl = document.getElementById("interact");
 var scoreValueEl = document.querySelector("#scoreValue");
 //var quizEl = document.getElementById(quiz-wrapper)
 // var questi
@@ -62,15 +63,26 @@ function decTimer(timerVal) {
 }
 
 // function getQuestion(){}
-
-var taskQuestionHandler = function(event) {
+function subtractTime(decrementBy) {
+    let curr = parseInt(timerEl.textContent);
+    var next;
+    if (decrementBy >= curr) {
+        timerEl.textContent = "0";
+        return;
+    } else {
+        next = curr - decrementBy;
+        timerEl.textContent = next;
+    }
+    return next;
+}
+var taskQuestionHandler = function(event, QuestionDataObj) {
     // if (event.target != HTMLButtonElement) {
     console.log(event.type);
     console.log(event.target);
         // return
     // } 
     var questionId = quizContentEl.getAttribute('value');//JSON.parse(quizContentEl.getAttribute('value'));
-    var correctId = QuestionArray[questionId].correctAnswerId;
+    var correctId = QuestionDataObj.correctAnswerId;// QuestionArray[questionId].correctAnswerId;
     var scoreValue_tmp = parseInt(scoreValueEl.textContent);
     var userAnswer = parseInt(event.target['value']);
     console.log(event.target['value']);
@@ -78,11 +90,14 @@ var taskQuestionHandler = function(event) {
     if (userAnswer === correctId){
         console.log("Correct Answer!");
         scoreValue_tmp++;
+        console.log(`Your score: ${scoreValue_tmp}`);
+        scoreValueEl.textContent = JSON.stringify(scoreValue_tmp);
+        return true;    
     } else {
         console.log("Sorry, thats Incorrect");
+        subtractTime(10);
+        return false;
     }
-    console.log(`Your score: ${scoreValue_tmp}`);
-    scoreValueEl.textContent = JSON.stringify(scoreValue_tmp);
 }
 
 var createQuizEl = function(QuestionDataObj) {
@@ -101,7 +116,7 @@ var createQuizEl = function(QuestionDataObj) {
         // tmpButton.value = quizAnswerChoices[i];
         tmpButton.value = i;
         tmpButton.textContent = quizAnswerChoices[i];
-        tmpButton.addEventListener('click', taskQuestionHandler);
+        // tmpButton.addEventListener('click', taskQuestionHandler);
         quizContentQuestionEl.appendChild(tmpButton);
     }
     quizContentEl.appendChild(quizContentQuestionEl);
@@ -149,12 +164,12 @@ var createQuestionEl = function(QuestionDataObj) {
 
 function StartQuiz() {
     // startEl.removeEventListener()
-    var currentScore = 0;
+    // var currentScore = 0;
     var timeRemaining = QUIZ_TIME_INIT;
-    containerEl.innerHTML = "";
+    // interactEl.innerHTML = "";
     scoreValueEl.classList.add("hidden");
     scoreValueEl.textContent=0;
-    var qidx=1;
+    // var qidx=1;
     //questionEl.setAttribute('style', );
     // var questionTextEl = document.getElementById('question-text');
     // choicesEl = document.createElement("form");
@@ -163,8 +178,8 @@ function StartQuiz() {
     // var questionObj = QuestionArray.pop();
     // createQuestionEl(questionObj);
     // for (var qidx=0; qidx<QuestionArray.length; qidx++){
-    let questionObj = QuestionArray[qidx]
-    createQuizEl(questionObj);
+    // let questionObj = QuestionArray[qidx]
+    // createQuizEl(questionObj);
     // }
     
     // var answerOptionBtn = document.getElementsByClassName('btn-choice');
@@ -210,9 +225,11 @@ function StartQuiz() {
     
     // timerEl.textContent = QUIZ_TIME_INIT;
     console.log("Quiz Start");
-    var exitCase = false;
+    // var exitCase = false;
     var timerInterval = setInterval( function() {
         console.log("Enter timerInterval: "+ timeRemaining)
+        subtractTime(1)
+
         if (timeRemaining > 1) {
             exitCase = false;
             timeRemaining = timeRemaining - 1;
@@ -224,22 +241,24 @@ function StartQuiz() {
             // console.log(timerVal);
         };
     }, 1000);
-    var exitInterval = setInterval(function() {
-            if (timerEl.textContent === "0") {
-                exttCase = true;
-                quizContentEl.textContent = "Game Over";
-                clearInterval(exitInterval);
-                return 1;
-            } else {
+    // var exitInterval = setInterval( function() {
+    //         if (timerEl.textContent === "0") {
+    //             exttCase = true;
+    //             quizContentEl.textContent = "Game Over";
+    //             clearInterval(exitInterval);
+    //             return 1;
+    //         } else {
 
-            }
-        }, 200);
+    //         }
+    //     }, 200);
+    return 0;
     // return (timeRemaining === undefined);
 }
 //function init(){
 startEl.addEventListener('click', function() {
-    containerEl.innerHTML="";
-    StartQuiz();
+    // containerEl.innerHTML="";
+    // StartQuiz();
+    console.log("start");
     // taskQuestionHandler;
 }
 );
@@ -248,7 +267,24 @@ startEl.addEventListener('click', function() {
     //     }
     // }
 // DEBUGGING
-
+// Event.matches()3
+function eventDelegator(event) {
+    if (!(event.target.matches('.btn-choice')||event.target.matches('#start'))) return
+    let questionObj = QuestionArray.pop();
+    quizContentEl.innerHTML="";
+    createQuizEl(questionObj);   
+    if (event.target.matches('#start') ){
+        interactEl.innerHTML="";
+        console.log("eventDelegator recieved start");
+        StartQuiz();
+    }
+    else {
+        // let questionObj = QuestionArray[0];
+        let questionResult = taskQuestionHandler(event, questionObj);
+        console.log("questionResult: "+questionResult);
+    }
+    // console.log(event.target)
+}
 function getEventType(event) {
     const log = document.getElementById('log');
     console.log(event.target);
@@ -256,4 +292,4 @@ function getEventType(event) {
     ${log.innerText}`;
     // console.log(event.target);
 }
-document.addEventListener('click',taskQuestionHandler);
+containerEl.addEventListener('click', eventDelegator);
