@@ -1,26 +1,39 @@
 // Define master array with question and FOUR answer options
 var QuestionArray = [ {
     qid : 0,
-    q : "What is the first line in an HTML file?",
-    a : ["#!/usr/bin/bash", "<head>", "<html>", "<!DOCTYPE html>"],
-    correctAnswerId : 3
+    q : "Which of these HTML tags typically provides the 'metadata' of a webpage?",
+    a : ["<div>", "<head>", "<h1>", "<body>"],
+    "correctAnswerId" : 1
     },
-    { 
-    qid : 1,
-    q: "CSS is an acronym for",
-    a: [ 'Custom Style Sheets', 'Cascading Style Sheets', 'Colored Silly Socks', 'Cascaded Style Sheet'],
-    correctAnswerId : 1
+    {
+        qid : 1,
+        q : "Which HTML attribute is used to insert a link to another page or section of content?",
+        a : ["id", "style", "href", "link"],
+        "correctAnswerId" : 2
     },
     { 
     qid : 2,
+    q: "CSS is an acronym for",
+    a: [ 'Custom Style Sheets', 'Cascading Style Sheets', 'Colored Silly Socks', 'Cascaded Style Sheet'],
+    "correctAnswerId" : 1
+    },
+    
+    { 
+    qid : 3,
     q: "How can the following line be shortened: counter = counter - 1", 
     a: ['counter--', 'counter=counter-1', '--counter;', 'counter--1'],
-    correctAnswerId : 0
-    }
+    "correctAnswerId" : 0
+    },
+{
+    qid : 4,
+    q : "JavaScript can be used to",
+    a : ["Add new elements", "Change style of elements", "Store information in the browser cache", "All of the above"],
+    "CorrectAnswerId" : 3
+}
 ];
 
 
-const QUIZ_TIME_INIT = 45;
+const QUIZ_TIME_INIT = 30;
 const NUM_QUESTIONS = 3;
 //const 
 var questionsRemaining = 3;
@@ -63,6 +76,13 @@ function decTimer(timerVal) {
 }
 
 // function getQuestion(){}
+function displayMessage(msgText) {
+    const msgEl = document.getElementById("message");
+    msgEl.textContent=msgText;
+}
+function displayTimer() {
+    timerEl.textContent = QUIZ_TIME_INIT;
+}
 function subtractTime(decrementBy) {
     let curr = parseInt(timerEl.textContent);
     var next;
@@ -75,50 +95,86 @@ function subtractTime(decrementBy) {
     }
     return next;
 }
-var taskQuestionHandler = function(event, QuestionDataObj) {
+function addScore(incrementBy){
+    const currScore = parseInt(scoreValueEl.textContent);
+    let nextScore = currScore+incrementBy;
+    scoreValueEl.textContent=nextScore;
+    return 1;
+    
+}
+// function taskQuestionHandler(QuestionDataObj) {
+
+var taskQuestionHandler = function(QuestionDataObj) {
+    if (!QuestionDataObj) return false
+    else {
     // if (event.target != HTMLButtonElement) {
-    console.log(event.type);
-    console.log(event.target);
+    // console.log(event.type);
+    // console.log(event.target);
         // return
     // } 
+
     var questionId = quizContentEl.getAttribute('value');//JSON.parse(quizContentEl.getAttribute('value'));
-    var correctId = QuestionDataObj.correctAnswerId;// QuestionArray[questionId].correctAnswerId;
+    quizContentEl.innerHTML="";
+    // if (QuestionDataObj === undefined) {
+    //     return false
+    // }
+    var correctId = QuestionDataObj['correctAnswerId'];// QuestionArray[questionId].correctAnswerId;
     var scoreValue_tmp = parseInt(scoreValueEl.textContent);
     var userAnswer = parseInt(event.target['value']);
     console.log(event.target['value']);
     console.log("Correct answer is: "+ correctId);
+    
     if (userAnswer === correctId){
         console.log("Correct Answer!");
+        displayMessage("Correct!")
         scoreValue_tmp++;
         console.log(`Your score: ${scoreValue_tmp}`);
-        scoreValueEl.textContent = JSON.stringify(scoreValue_tmp);
-        return true;    
+        scoreValueEl.textContent = scoreValue_tmp;
+        return true
     } else {
         console.log("Sorry, thats Incorrect");
-        subtractTime(10);
-        return false;
+        displayMessage("Incorrect")
+        let retVal = subtractTime(10);
+        return retVal;
+        // return;
     }
 }
-
-var createQuizEl = function(QuestionDataObj) {
-    var quizAnswerChoices = QuestionDataObj.a;
+    
+}
+function createQuizEl(QuestionDataObj) {
+// var createQuizEl = function(QuestionDataObj) {
     // quizContentEl.setAttribute
-    quizContentEl.setAttribute('value', QuestionDataObj.qid);
-
-    let quizContentQuestionEl = document.createElement("div");
-    quizContentQuestionEl.textContent = QuestionDataObj.q;
+    if(!QuestionDataObj) {
+        return;
+    }
+    let quizAnswerChoices = QuestionDataObj.a;
+    var quizContentQuestionEl = document.createElement("div");
+    var quizAnswerContainerEl = document.createElement("div");
     quizContentQuestionEl.classList.add("quiz-question");
-    var quizChoicesEl = []
+    quizAnswerContainerEl.classList.add("page-section");
+    quizContentQuestionEl.textContent =QuestionDataObj.q;
+    // var quizAnswerChoicesListEl = document.createElement("ul");
+    // quizAnswerChoicesListEl.classList.add("answer-list-ul");
+    // quizAnswerChoices.classList.add("")
+
+    // var quizChoicesEl = []
     for (var i=0;i<quizAnswerChoices.length; i++) {
         console.log("Element "+ i);
         let tmpButton = document.createElement("button");
-        tmpButton.className ="btn btn-choice"
-        // tmpButton.value = quizAnswerChoices[i];
+        tmpButton.classList.add("btn-choice")
         tmpButton.value = i;
         tmpButton.textContent = quizAnswerChoices[i];
+        quizAnswerContainerEl.appendChild(tmpButton)
         // tmpButton.addEventListener('click', taskQuestionHandler);
-        quizContentQuestionEl.appendChild(tmpButton);
+        // tmpListItemEl.appendChild(tmpButton);
+        
     }
+    // quizContentQuestionEl.textContent=QuestionDataObj.q;
+    quizContentQuestionEl.appendChild(quizAnswerContainerEl);
+    quizContentEl.setAttribute('value', QuestionDataObj.qid)
+    // return quizAnswerContainerEl;
+    // quizAnswerContainerEl.appendChild(quizAnswerChoicesListEl)
+    // quizContentQuestionEl.appendChild(quizAnswerContainerEl)
     quizContentEl.appendChild(quizContentQuestionEl);
     // quizContentQuestionEl = document.getElementById("quiz-question");
 }
@@ -161,7 +217,12 @@ var createQuestionEl = function(QuestionDataObj) {
 // function updateChoices() {
 
 // }
-
+function endQuiz() {
+    interactEl.textContent = "GAME OVER";
+    quizContentEl.innerHTML = "";
+    displayMessage("Your Score: "+scoreValueEl.textContent);
+}
+// var StartQuiz = function(event) {
 function StartQuiz() {
     // startEl.removeEventListener()
     // var currentScore = 0;
@@ -174,6 +235,8 @@ function StartQuiz() {
     // var questionTextEl = document.getElementById('question-text');
     // choicesEl = document.createElement("form");
     var answerOptionsArrayEl = [];
+    // const questionObj = QuestionArray.pop();
+    // const questionHTMLObj = createQuizEl(questionObj);
     // var questionObj = QuestionArray.pop();
     // var questionObj = QuestionArray.pop();
     // createQuestionEl(questionObj);
@@ -227,20 +290,19 @@ function StartQuiz() {
     console.log("Quiz Start");
     // var exitCase = false;
     var timerInterval = setInterval( function() {
-        console.log("Enter timerInterval: "+ timeRemaining)
-        subtractTime(1)
-
-        if (timeRemaining > 1) {
-            exitCase = false;
-            timeRemaining = timeRemaining - 1;
-            timerEl.textContent = timeRemaining;
-        } else {
-            timerEl.textContent = "0";
-            timeRemaining = undefined;
+        var timeRemaining = subtractTime(1);
+        if (!timeRemaining) {
+            console.log("Timer Expired");
+            
             clearInterval(timerInterval);
-            // console.log(timerVal);
-        };
+            endQuiz();
+            // return 1;
+        } else {
+            console.log("Enter timerInterval: "+ timeRemaining)
+        }
+        
     }, 1000);
+    // return taskQuestionHandler()
     // var exitInterval = setInterval( function() {
     //         if (timerEl.textContent === "0") {
     //             exttCase = true;
@@ -251,27 +313,98 @@ function StartQuiz() {
 
     //         }
     //     }, 200);
-    return 0;
     // return (timeRemaining === undefined);
 }
+var thisQid=0;
 
 function eventDelegator(event) {
-    if (!(event.target.matches('.btn-choice')||event.target.matches('#start'))) return
-    let questionObj = QuestionArray.pop();
-    quizContentEl.innerHTML="";
-    createQuizEl(questionObj);   
+    if (!(event.target.matches('.btn-choice')||event.target.matches('#start'))) return;
+    // let qidquestionObj.push(QuestionArray[qid]);
+
     if (event.target.matches('#start') ){
+        console.log("eventDelegator recieved start 1");
         interactEl.innerHTML="";
-        console.log("eventDelegator recieved start");
+        console.log("eventDelegator recieved start 2");
         StartQuiz();
+    } else if (event.target.matches('.btn-choice')){
+            console.log("got answer")
+            // qid++;
+            // let lastQuestionObj = questionObj.pop();
+            // questionObj.push(QuestionArray[qid]);
+            // let questionObj = QuestionArray.pop();
+            
+            var uanswer = parseInt(event.target['value']);
+            var answerKey = QuestionArray[thisQid].correctAnswerId;
+            console.log(uanswer);
+            console.log(answerKey)
+            // console.log
+            var continueState;
+            if (uanswer === answerKey) {
+                console.log("right answer"); 
+                addScore(10);
+                continueState = 1;
+            } else {
+                console.log("Wrong answer");
+                continueState = subtractTime(10);
+            }
+            let nextQid = thisQid + 1;
+            if (!QuestionArray[nextQid] || !continueState){
+                return endQuiz();
+            }
+            if (QuestionArray[nextQid] != undefined ) {
+                quizContentEl.innerHTML = "";
+                thisQid++;
+            } 
+            else {
+                return endQuiz();
+            }
+            
+            // qid++;
+            // return createQuizEl(questionObj);
     }
-    else {
-        // let questionObj = QuestionArray[0];
-        let questionResult = taskQuestionHandler(event, questionObj);
-        console.log("questionResult: "+questionResult);
-    }
+    let answerOptions = QuestionArray[thisQid].a;
+    let questionText = QuestionArray[thisQid].q;
+    let correctAnswer = QuestionArray[thisQid].correctAnswerId;
+    
+    var QuestionDataObj = {
+        qid: thisQid,
+        q: questionText,
+        a: answerOptions,
+        correctAnswerId : correctAnswer
+        };
+    // localStorage.setItem('check': correctAnswer);
+    createQuizEl(QuestionDataObj);
+
+        
+        
+        // return taskQuestionHandler(QuestionArray[qid]);
+        // if (!questionResult) {
+        //     endQuiz();
+        //     console.log("taskQuestionHandler returned false")
+        // } else {
+        //     qid++;
+        //     let questionObj = QuestionArray[qid]
+        //     createQuizEl(questionObj);
+        //     console.log("questionResult: "+questionResult);
+        // }
+  
+
+    
+ 
+    
+
+            // quizContentEl.appendChild(questionHTMLObj);
+            // quizContentEl.setAttribute('value', questionObj.qid)
+
+            // let questionHTMLObj = createQuizEl(questionObj);
+            // quizContentEl.appendChild(questionHTMLObj);
+            // quizContentEl.setAttribute('value', questionObj.qid)
+        // }
+
+    
     // console.log(event.target)
 }
+displayTimer();
 function getEventType(event) {
     const log = document.getElementById('log');
     console.log(event.target);
