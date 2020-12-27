@@ -1,8 +1,17 @@
 
 var body = document.body;
 var containerEl = document.createElement("div");
-var listEl = document.createElement("ol");
+containerEl.setAttribute("style", "width: 100%; align-items:center")
+var listEl = document.createElement("ul");
+listEl.setAttribute("style", "list-style: none;text-align:center")
+var clearScoresBtn = document.createElement("button");
+clearScoresBtn.textContent = "Clear Highscores";
+var returnBtn = document.createElement("button");
 // listItemEl =
+function clearScores() {
+    localStorage.clear();
+    displayScores();
+}
 function displayScores(){
     if (localStorage.length < 1) {
         listEl.textContent = "No scores saved";
@@ -14,10 +23,13 @@ function displayScores(){
             thisListItemEl.textContent = thisKey+": "+thisValue;
             listEl.appendChild(thisListItemEl);      
         }
+        clearScoresBtn.onclick = clearScores;
         containerEl.appendChild(listEl);
+        containerEl.appendChild(clearScoresBtn);
         body.appendChild(containerEl);
+        
+
     }
 }
-
 
 displayScores();

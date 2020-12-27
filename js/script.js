@@ -1,89 +1,69 @@
 // Define master array with question and FOUR answer options
-var QuestionArray = [ {
+const QuestionArray = [ {
     qid : 0,
     q : "Which of these HTML tags typically provides the 'metadata' of a webpage?",
-    a : ["<div>", "<head>", "<h1>", "<body>"],
-    "correctAnswerId" : 1
+    a : ["<div>", "<meta>", "<h1>", "<body>"],
+    correctAnswerId : 1
     },
     {
         qid : 1,
         q : "Which HTML attribute is used to insert a link to another page or section of content?",
-        a : ["id", "style", "href", "link"],
+        a : ["id", "a", "href", "link"],
         "correctAnswerId" : 2
     },
     { 
     qid : 2,
     q: "CSS is an acronym for",
     a: [ "Custom Style Sheets", "Cascading Style Sheets", "Colored Silly Socks", "Cascaded Style Sheet"],
-    "correctAnswerId" : 1
+    correctAnswerId : 1
     },
     
     { 
     qid : 3,
-    q: "How can the following line be shortened: counter = counter - 1", 
-    a: ['counter--', 'counter=counter-1', '--counter;', 'counter--1'],
-    "correctAnswerId" : 0
+    q: "The expression 'counter--' is shorthand for", 
+    a: ['-counter+1', 'counter = counter-1', 'counter = -counter-1', 'counter = counter+1'],
+    correctAnswerId : 1
     },
 {
     qid : 4,
     q : "JavaScript can be used to",
-    a : ["Add new elements", "Change style of elements", "Store information in the browser cache", "All of the above"],
-    "CorrectAnswerId" : 3
+    a : ["Add new elements", "Change styling applied to elements", "Store information in the browser cache", "All of the above"],
+    correctAnswerId : 3
 }
 ];
 
 
-const QUIZ_TIME_INIT = 30;
-const NUM_QUESTIONS = 3;
-//const 
-var questionsRemaining = 3;
+const QUIZ_TIME_INIT = 45;
 
-//var timeRemaining 
-
-
-// var body = document.body;
-// Element Objects
-// var highscoreEl = document.createElement("nav")
-// var 
 var quizContentEl = document.getElementById('quiz-content');
 var questionEl = document.getElementById("question-wrap");
 var answerOptionsEl = document.getElementById("answer-options");
 var containerEl = document.querySelector("#main-content");
 var interactEl = document.getElementById("interact");
 var scoreValueEl = document.querySelector("#scoreValue");
-//var quizEl = document.getElementById(quiz-wrapper)
-// var questi
-var timerEl = document.getElementById('timer');
-var startEl = document.querySelector('#start');
 
-// var formEl = document.createElement("form");
-// var formDivEl = document.createElement("div");
-// formDivEl.setAttribute('style', 'text-align: center');
-// choiceFormEl = document.createAttribute()
-// var questEl = document.getElementById('question');
-// var choicesElArray = document.getElementsByClassName('choices');
-// var startBtn = document.getElementById('start');
-//var 
-//function getRandomIndex(
+var timerEl = document.getElementById('timer');
+
 function welcomePage(){
     displayMessage("");
     quizContentEl.innerHTML = "";   
     var welcomeEl = document.createElement("h2");
-    welcomeEl.textContent = "Welcome to the Speed Challenge Quiz";
+    welcomeEl.textContent = "Welcome to Speed Quiz";
     var infoEl = document.createElement("p");
-    infoEl.textContent = "Click 'Start' to begin";
+    infoEl.textContent = `Click 'Start' to begin`;
+    var spanStartEl = document.createElement("span");
+    spanStartEl.innerHTML = "<br />"
     var startBtn = document.createElement("button");
     startBtn.id = "start";
     startBtn.className = "btn";
     startBtn.textContent = "Start";
+    spanStartEl.appendChild(startBtn);
     interactEl.appendChild(welcomeEl);
     interactEl.appendChild(infoEl);
-    interactEl.appendChild(startBtn);
+    interactEl.appendChild(spanStartEl);
     var quizPlaceholderEl = document.createElement("div");
     quizContentEl.appendChild(quizPlaceholderEl);
     resetTimer();
-    // QUIZ_TIME_INIT;
-
 }
 
 function decTimer(timerVal) {
@@ -98,7 +78,7 @@ function decTimer(timerVal) {
 
 // function getQuestion(){}
 function displayMessage(msgText, style) {
-    const msgEl = document.getElementById("message");
+    let msgEl = document.getElementById("message");
     if (!style) {
         msgEl.className = "message-panel" //default
     } else {
@@ -114,12 +94,13 @@ function subtractTime(decrementBy) {
     var next;
     if (decrementBy >= curr) {
         timerEl.textContent = "0";
-        return;
+        endQuiz();
     } else {
         next = curr - decrementBy;
         timerEl.textContent = next;
+        return next;
     }
-    return next;
+    // return next;
 }
 function addScore(incrementBy){
     let currScore = parseInt(scoreValueEl.textContent);
@@ -128,10 +109,9 @@ function addScore(incrementBy){
 }
 // function taskQuestionHandler(QuestionDataObj) {
 
-var taskQuestionHandler = function(QuestionDataObj) {
+var taskQuestionHandler = function(event,QuestionDataObj) {
     if (!QuestionDataObj) return false
     else {
-    var questionId = quizContentEl.getAttribute('value');//JSON.parse(quizContentEl.getAttribute('value'));
     var correctId = QuestionDataObj['correctAnswerId'];// QuestionArray[questionId].correctAnswerId;
     var scoreValue_tmp = parseInt(scoreValueEl.textContent);
     var userAnswer = parseInt(event.target['value']);
@@ -150,10 +130,10 @@ var taskQuestionHandler = function(QuestionDataObj) {
 }
     
 };
-function createQuizEl(QuestionDataObj) {
+var createQuizEl = function(QuestionDataObj) {
 // var createQuizEl = function(QuestionDataObj) {
     // quizContentEl.setAttribute
-    if(!QuestionDataObj) {
+    if(!QuestionDataObj.q) {
         return;
     }
     let quizAnswerChoices = QuestionDataObj.a;
@@ -164,21 +144,12 @@ function createQuizEl(QuestionDataObj) {
     // document.querySelectorAll
     // var quizQuestionHeadingEl = document.createElement("h2");
     quizContentQuestionEl.innerHTML =  `<div><h2>${QuestionDataObj.q}</h2></div>`;
-    // quizContent
-    // quizContentQuestionEl.textContent =QuestionDataObj.q;
-    // quizContent.innerHTML = `<h2>${QuestionDataObj.q}</h2>`;
-    // var quizAnswerChoicesListEl = document.createElement("ul");
-    // quizAnswerChoicesListEl.classList.add("answer-list-ul");
-    // quizAnswerChoices.classList.add("")
-
-    // var quizChoicesEl = []
-    for (var i=0;i<quizAnswerChoices.length; i++) {
-        console.log("Element "+ i);
-        let tmpButton = document.createElement("button");
+    for (let i=0;i<quizAnswerChoices.length; i++) {
+        var tmpButton = document.createElement("button");
         tmpButton.className="btn btn-choice"
         tmpButton.value = i;
         tmpButton.textContent = quizAnswerChoices[i];
-        let tmpAnswerDiv = document.createElement("div");
+        var tmpAnswerDiv = document.createElement("div");
         // tmpAnswerDiv.className = ""
         tmpAnswerDiv.appendChild(tmpButton);
         quizContentQuestionEl.appendChild(tmpAnswerDiv)
@@ -193,57 +164,29 @@ function createQuizEl(QuestionDataObj) {
     quizContentEl.replaceChild(quizContentQuestionEl,oldCh);
     // quizContentQuestionEl = document.getElementById("quiz-question");
 }
-var createQuestionEl = function(QuestionDataObj) {
-    // var listItemEl = document.createElement("li");
-    var questionFormEl = document.createElement("form");
-    // questionFormEl.className = "question-form";
-
-    // create div to hold task info and add to list item
-    var questionDataEl = document.createElement("div");
-    questionDataEl.className = "question-info";
-    tmp_innerHTML="<h2 class='question-text'>" + QuestionDataObj.q + "</h2>";
-    var answerChoices = QuestionDataObj.a;
-    for (i=0; i<4; i++) {
-        tmp_innerHTML=tmp_innerHTML + "<li class='answer-options-list'> <button class='btn btn-choice' type='button'>"+JSON.stringify(answerChoices[i])+"</button></li>";
-    }
-
-    questionDataEl.innerHTML = tmp_innerHTML;
-    
-    //listItemEl.appendChild(taskInfoEl);
-    questionFormEl.appendChild(questionDataEl);
-    console.dir(questionFormEl);
-    questionEl.appendChild(questionFormEl);
-
-    // add list item to list
-    // tasksToDoEl.appendChild(listItemEl);
-    //questEl.textContent = QuestionArray[qid]['q'];
-    //var j=0;
-//    for (let j =0;j<choicesElArray.length;j++){
-    /*choices = QuestionArray[idx]['a'];
-    for (let j=0;j<4;j++) {
-        let choiceEl = choicesElArray[j]
-        choiceEl.textContent = choices[j];
-    }
-        console.log("loop "+j);
-        console.log(optEl);
-        //j++;
-    */
-}
-// function updateChoices() {
+// var createHighscoreEntry = function(userHighscoreObj){
 
 // }
 
+
 var taskFormHandler = function(event) {
     event.preventDefault();
+    
     var inputInitials = document.querySelector("input[name='user-initials']").value;
-    // var scoreValue = document.querySelector(
+    
     if (!inputInitials) return
-    console.log("submit initials");
-    console.log(this.value);
-    console.log(inputInitials);
-    // localStorage.setItem("score", this.value);
-    localStorage.setItem(inputInitials, this.value);
+    var existingScore = localStorage.getItem(inputInitials)
+    var scoreValue = this.value;
+    if (existingScore === null) {
+        localStorage.setItem(inputInitials, scoreValue);
+    } else {
+        if (scoreValue > existingScore) {
+            localStorage.setItem(inputInitials, scoreValue);
+        }
+    }
+    // createHighscoreEntry(userHighscoreObj);
     welcomePage();
+    
 }
 function createFormEl(score) {
 
@@ -253,8 +196,8 @@ function createFormEl(score) {
     inputInitialsEl.placeholder = "Enter your initials";
     inputInitialsEl.name="user-initials";
     inputInitialsEl.className = "form-text";
-    inputSubmitBtn.className = "btn";
-    inputCancelBtn.className = "btn";
+    inputSubmitBtn.className = "btn-form";
+    inputCancelBtn.className = "btn-form";
     inputSubmitBtn.type="submit";
     inputSubmitBtn.id = "save-score";
     inputCancelBtn.type="reset";
@@ -271,16 +214,15 @@ function createFormEl(score) {
     inputFormEl.appendChild(inputSubmitBtn);
     inputFormEl.appendChild(inputCancelBtn);
     return inputFormEl;
-    // taskFormHandler(inputFormEl);
-    // interactEl.appendChild(inputFormEl)
 };
 // var saveHighScore()
 
 function endQuiz() {
-    var score = scoreValueEl.textContent;
+    continueState = false;
+    var score = parseInt(timerEl.textContent);
     // const welcomeEl = interactEl.getElementById("welcome");
     // welcomeEl.textContent = "Game Over";
-    displayMessage("Your Score: "+scoreValueEl.textContent);
+    displayMessage("Your Score: "+score);
     quizContentEl.innerHTML = "";
     let inputFormEl = createFormEl(score);
     // inputFormEl = score;
@@ -293,212 +235,109 @@ function endQuiz() {
         // inputFormEl.removeEventListener('submit',taskFormHandler);
         welcomePage();
     });
-    
-    
-    // signUpButton.addEventListener('click', function(event) {
-    //     event.preventDefault();
-      
-    //     var email = document.querySelector('#email').value;
-    //     var password = document.querySelector('#password').value;
-      
-    //     if (email === '') {
-    //       displayMessage('error', 'Email cannot be blank');
-    //     } else if (password === '') {
-    //       displayMessage('error', 'Password cannot be blank');
-    //     } else {
-    //       displayMessage('success', 'Registered successfully');
-      
-    //       // Save email and password to localStorage using `setItem()`
-    //       localStorage.setItem('email', email);
-    //       localStorage.setItem('password', password);
-    //       // Render the last registered email and password
-    //       renderLastRegistered();
-    //     }
-    //   });
 }
 // var StartQuiz = function(event) {
+resetTimer();
+
 function StartQuiz() {
-    // startEl.removeEventListener()
-    // var currentScore = 0;
     var timeRemaining = QUIZ_TIME_INIT;
-    // interactEl.innerHTML = "";
     scoreValueEl.classList.add("hidden");
     scoreValueEl.textContent=0;
-    var answerOptionsArrayEl = [];
-    // const questionObj = QuestionArray.pop();
-    // const questionHTMLObj = createQuizEl(questionObj);
-    // var questionObj = QuestionArray.pop();
-    // var questionObj = QuestionArray.pop();
-    // createQuestionEl(questionObj);
-    // for (var qidx=0; qidx<QuestionArray.length; qidx++){
-    // let questionObj = QuestionArray[qidx]
-    // createQuizEl(questionObj);
-    // }
-    
-    // var answerOptionBtn = document.getElementsByClassName('btn-choice');
-    // console.log(answerOptionBtn);
-    // console.dir(answerOptionBtn);
-    // for (var l=0;l<answerOptionBtn.length;l++){
-    //     answerOptionBtn.item(l).setAttribute("value", l)
-    // }
-    
-    // for(var k=0;k<4;k++){
-    //     answerOptionsArrayEl.push(document.createElement("button"));
-    //     answerOptionsArrayEl[0].setAttribute('type', 'button');
-    //     answerOptionsArrayEl[0].textContent = QuestionArray[qidx]['a'][k];
-    // // //choicesEl.appendChild(answerOptionsArrayEl);
-    // answerOptionsEl.appendChild(answerOptionsArrayEl.pop())
-    // }
-    // var choiceElA = document.createElement("button");
-    // var choiceElB = document.createElement("button");
-    // var choiceElC = document.createElement("button");
-    // var choiceElD = document.createElement("button");
-    //questionTextEl.textContent = QuestionArray[qidx]['q'];
-    //var choices = JSON.parse(qidTochoices[ID1]);
-    // choiceElA.textContent = QuestionArray[qidx]['a'][0];
-    // choiceElA.textContent = QuestionArray[qidx]['a'][0];
-    // choiceElB.textContent = QuestionArray[qidx]['a'][1];
-    // choiceElC.textContent = QuestionArray[qidx]['a'][2];
-    // choiceElD.textContent = QuestionArray[qidx]['a'][3];
-    // questionEl.textContent = QuestionArray[qidx]['q'];
-    
-    // containerEl.appendChild(questionEl);
-    // containerEl.appendChild(choicesEl);
-    
-    
-    // choicesEl.appendChild(choiceElA);
-    // choicesEl.appendChild(choiceElB);
-    // choicesEl.appendChild(choiceElC);
-    // choicesEl.appendChild(choiceElD)
-    // questionEl.appendChild(questionTextEl)
-    // questionEl.appendChild(answer);
 
-    // var containerEl = document.body.getElementsByClassName("container")[0];
-    // containerEl.appendChild(questionEl);
-    
-    // timerEl.textContent = QUIZ_TIME_INIT;
-    console.log("Quiz Start");
-    // var exitCase = false;
     var timerInterval = setInterval( function() {
-
-        var timeRemaining = subtractTime(1);
-        if (!timeRemaining) {
-            console.log("Timer Expired");
-            
-            clearInterval(timerInterval);
-            endQuiz();
-            // return 1;
+        if (continueState === true) {
+            subtractTime(1);
         } else {
-            console.log("Enter timerInterval: "+ timeRemaining)
+            clearInterval(timerInterval);
         }
         
     }, 1000);
-    // return taskQuestionHandler()
-    // var exitInterval = setInterval( function() {
-    //         if (timerEl.textContent === "0") {
-    //             exttCase = true;
-    //             quizContentEl.textContent = "Game Over";
-    //             clearInterval(exitInterval);
-    //             return 1;
-    //         } else {
-
-    //         }
-    //     }, 200);
-    // return (timeRemaining === undefined);
 }
-var thisQid;
-
+var nextQid=0;
+var thisQid=0;
+var continueState=true;
 function eventDelegator(event) {
-    if (!(event.target.matches('.btn-choice')||event.target.matches('#start'))) return;
-    // let qidquestionObj.push(QuestionArray[qid]);
-
-    if (event.target.matches('#start') ){
-        console.log("eventDelegator recieved start 1");
-        interactEl.innerHTML="";
-        console.log("eventDelegator recieved start 2");
-        StartQuiz();
-        thisQid = 0;
-    } else if (event.target.matches('.btn-choice')){
-            console.log("got answer")
-            // qid++;
-            // let lastQuestionObj = questionObj.pop();
-            // questionObj.push(QuestionArray[qid]);
-            // let questionObj = QuestionArray.pop();
-            
-            var uanswer = parseInt(event.target['value']);
-            var answerKey = QuestionArray[thisQid].correctAnswerId;
-            console.log(uanswer);
-            console.log(answerKey)
-            // console.log
-            var continueState;
-            if (uanswer === answerKey) {
-                console.log("right answer"); 
-                addScore(10);
-                displayMessage("Correct!", )
-                continueState = 1;
-            } else {
-                console.log("Wrong answer");
-                continueState = subtractTime(10);
-                displayMessage("Incorrect")
-            }
-            let nextQid = thisQid + 1;
-            if (!QuestionArray[nextQid] || !continueState){
-                return endQuiz();
-            }
-            if (QuestionArray[nextQid] != undefined ) {
-                // quizContentEl.innerHTML = "";
-                thisQid++;
-            } 
-            else {
-                return endQuiz();
-            }
-            
-            // qid++;
-            // return createQuizEl(questionObj);
-    }
-    let answerOptions = QuestionArray[thisQid].a;
-    let questionText = QuestionArray[thisQid].q;
-    let correctAnswer = QuestionArray[thisQid].correctAnswerId;
+    if(!(event.target.matches('#start'))) return;
+    console.log("eventDelegator recieved start 1");
+    interactEl.innerHTML="";
+    console.log("eventDelegator recieved start 2");
+    StartQuiz();
+    thisQid = 0;
+    nextQid = 0;
+    var answerOptions = QuestionArray[0].a;
+    var questionText = QuestionArray[0].q;
+    var correctAnswer = QuestionArray[0].correctAnswerId;
     
     var QuestionDataObj = {
-        qid: thisQid,
+        qid: 0,
         q: questionText,
         a: answerOptions,
         correctAnswerId : correctAnswer
         };
-    // localStorage.setItem('check': correctAnswer);
+    
+    quizContentEl.addEventListener("click",quizEventHandler);
     createQuizEl(QuestionDataObj);
-
-        
-        
-        // return taskQuestionHandler(QuestionArray[qid]);
-        // if (!questionResult) {
-        //     endQuiz();
-        //     console.log("taskQuestionHandler returned false")
-        // } else {
-        //     qid++;
-        //     let questionObj = QuestionArray[qid]
-        //     createQuizEl(questionObj);
-        //     console.log("questionResult: "+questionResult);
-        // }
-  
-
-    
- 
-    
-
-            // quizContentEl.appendChild(questionHTMLObj);
-            // quizContentEl.setAttribute('value', questionObj.qid)
-
-            // let questionHTMLObj = createQuizEl(questionObj);
-            // quizContentEl.appendChild(questionHTMLObj);
-            // quizContentEl.setAttribute('value', questionObj.qid)
-        // }
-
-    
-    // console.log(event.target)
 }
-resetTimer();
+function quizEventHandler(event) {
+    // event.preventDefault();
+    if (!(event.target.matches('.btn-choice'))) return;
+    // else {
+    
+    console.log("got answer")
+    var uanswer = parseInt(event.target['value']);
+    // let thisQid = nextQid;
+    // let thisQ = QuestionArray[thisQid];
+        nextQid++;
+    var correctAnswer = QuestionArray[thisQid].correctAnswerId;
+    // let answerKey = thisQ.correctAnswerId;
+    console.log(uanswer);
+    // console.log(answerKey);
+    console.log(correctAnswer);
+
+    // console.log
+    // var continueState;
+    if (uanswer === correctAnswer) {
+        console.log("right answer"); 
+        addScore(10);
+        displayMessage("Correct!")
+    } else {
+        console.log("Wrong answer");
+        subtractTime(10);
+        displayMessage("Incorrect")
+    }
+    if (nextQid < QuestionArray.length) {
+        thisQid++;
+        var answerOptions = QuestionArray[nextQid].a;
+        var questionText = QuestionArray[nextQid].q;
+        var QuestionDataObj = {
+            qid: nextQid,
+            q: questionText,
+            a: answerOptions,
+            correctAnswerId : correctAnswer
+            };
+        createQuizEl(QuestionDataObj);
+    } else {
+        if (continueState === true){
+            endQuiz();
+        } else {
+            return;
+        }
+        // continueState = false;
+    }
+}
+// }
+    
+    // let nextQ = QuestionArray[nextQid];
+
+    // if (continueState) {
+    // nextQid = nextQid + 1;
+
+    
+        //  nextQ = QuestionArray[nextQid];
+    // thisQid++;
+
+
+    
 function getEventType(event) {
     const log = document.getElementById('log');
     console.log(event.target);
