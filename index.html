@@ -10,31 +10,28 @@
 <body>
     <header>
         <nav>
-            <a href="#">View Highscores</a>
+            <a href="view-scores.html">View Highscores</a>
         </nav>
-        <h3>Time Left: <span id="timer">75
-
-        </span>
-        </h3>
+            <h3>Time Left: <span id="timer">75</span></h3>
     </header>
     <div id="main-content" class="wrapper">
-        <div id="interact" class="container"> 
+        <!-- <main> -->
+        <div id="interact" class="message-panel"> 
             <h2 id="welcome">Welcome to Speed Quiz</h2>
-            <p>Press 'Start' to begin<br />
-                <div>
-            <button id="start">Start</button>
-                </div>
-            </p>
-            
+            <p>Press 'Start' to begin<br /></p>
+            <span><br /><button id="start" class="btn">Start</button></span>
         </div>
         <div id="quiz-content" class="page-section">
+            <div class="quiz-question">
+            </div>
         </div>
-        <div class="page-section">
-        <h2><p><span id="message"></span></p></h2>
-        </div>
+        <div class="message-panel"><span id="message"></span></div>
+        <span id="scoreValue" class="hidden"></span>
+        
+    <!-- </main>       -->
+
         
     </div>
-    <span id="scoreValue" class="hidden"></span>
     
     <script src="./js/script.js"></script>
 </body>

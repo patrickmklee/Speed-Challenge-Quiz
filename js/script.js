@@ -14,7 +14,7 @@ var QuestionArray = [ {
     { 
     qid : 2,
     q: "CSS is an acronym for",
-    a: [ 'Custom Style Sheets', 'Cascading Style Sheets', 'Colored Silly Socks', 'Cascaded Style Sheet'],
+    a: [ "Custom Style Sheets", "Cascading Style Sheets", "Colored Silly Socks", "Cascaded Style Sheet"],
     "correctAnswerId" : 1
     },
     
@@ -65,6 +65,27 @@ var startEl = document.querySelector('#start');
 // var startBtn = document.getElementById('start');
 //var 
 //function getRandomIndex(
+function welcomePage(){
+    displayMessage("");
+    quizContentEl.innerHTML = "";   
+    var welcomeEl = document.createElement("h2");
+    welcomeEl.textContent = "Welcome to the Speed Challenge Quiz";
+    var infoEl = document.createElement("p");
+    infoEl.textContent = "Click 'Start' to begin";
+    var startBtn = document.createElement("button");
+    startBtn.id = "start";
+    startBtn.className = "btn";
+    startBtn.textContent = "Start";
+    interactEl.appendChild(welcomeEl);
+    interactEl.appendChild(infoEl);
+    interactEl.appendChild(startBtn);
+    var quizPlaceholderEl = document.createElement("div");
+    quizContentEl.appendChild(quizPlaceholderEl);
+    resetTimer();
+    // QUIZ_TIME_INIT;
+
+}
+
 function decTimer(timerVal) {
     if (timerVal > 0) {
         timerVal--;
@@ -76,11 +97,16 @@ function decTimer(timerVal) {
 }
 
 // function getQuestion(){}
-function displayMessage(msgText) {
+function displayMessage(msgText, style) {
     const msgEl = document.getElementById("message");
+    if (!style) {
+        msgEl.className = "message-panel" //default
+    } else {
+        msgEl.className = style;
+    }
     msgEl.textContent=msgText;
 }
-function displayTimer() {
+function resetTimer() {
     timerEl.textContent = QUIZ_TIME_INIT;
 }
 function subtractTime(decrementBy) {
@@ -96,43 +122,26 @@ function subtractTime(decrementBy) {
     return next;
 }
 function addScore(incrementBy){
-    const currScore = parseInt(scoreValueEl.textContent);
-    let nextScore = currScore+incrementBy;
-    scoreValueEl.textContent=nextScore;
-    return 1;
-    
+    let currScore = parseInt(scoreValueEl.textContent);
+    var nextScore = currScore+incrementBy;
+    scoreValueEl.textContent=nextScore;    
 }
 // function taskQuestionHandler(QuestionDataObj) {
 
 var taskQuestionHandler = function(QuestionDataObj) {
     if (!QuestionDataObj) return false
     else {
-    // if (event.target != HTMLButtonElement) {
-    // console.log(event.type);
-    // console.log(event.target);
-        // return
-    // } 
-
     var questionId = quizContentEl.getAttribute('value');//JSON.parse(quizContentEl.getAttribute('value'));
-    quizContentEl.innerHTML="";
-    // if (QuestionDataObj === undefined) {
-    //     return false
-    // }
     var correctId = QuestionDataObj['correctAnswerId'];// QuestionArray[questionId].correctAnswerId;
     var scoreValue_tmp = parseInt(scoreValueEl.textContent);
     var userAnswer = parseInt(event.target['value']);
-    console.log(event.target['value']);
-    console.log("Correct answer is: "+ correctId);
-    
     if (userAnswer === correctId){
-        console.log("Correct Answer!");
         displayMessage("Correct!")
         scoreValue_tmp++;
         console.log(`Your score: ${scoreValue_tmp}`);
         scoreValueEl.textContent = scoreValue_tmp;
         return true
     } else {
-        console.log("Sorry, thats Incorrect");
         displayMessage("Incorrect")
         let retVal = subtractTime(10);
         return retVal;
@@ -140,7 +149,7 @@ var taskQuestionHandler = function(QuestionDataObj) {
     }
 }
     
-}
+};
 function createQuizEl(QuestionDataObj) {
 // var createQuizEl = function(QuestionDataObj) {
     // quizContentEl.setAttribute
@@ -151,8 +160,13 @@ function createQuizEl(QuestionDataObj) {
     var quizContentQuestionEl = document.createElement("div");
     var quizAnswerContainerEl = document.createElement("div");
     quizContentQuestionEl.classList.add("quiz-question");
-    quizAnswerContainerEl.classList.add("page-section");
-    quizContentQuestionEl.textContent =QuestionDataObj.q;
+    // quizAnswerContainerEl.classList.add("quiz-input");
+    // document.querySelectorAll
+    // var quizQuestionHeadingEl = document.createElement("h2");
+    quizContentQuestionEl.innerHTML =  `<div><h2>${QuestionDataObj.q}</h2></div>`;
+    // quizContent
+    // quizContentQuestionEl.textContent =QuestionDataObj.q;
+    // quizContent.innerHTML = `<h2>${QuestionDataObj.q}</h2>`;
     // var quizAnswerChoicesListEl = document.createElement("ul");
     // quizAnswerChoicesListEl.classList.add("answer-list-ul");
     // quizAnswerChoices.classList.add("")
@@ -161,21 +175,22 @@ function createQuizEl(QuestionDataObj) {
     for (var i=0;i<quizAnswerChoices.length; i++) {
         console.log("Element "+ i);
         let tmpButton = document.createElement("button");
-        tmpButton.classList.add("btn-choice")
+        tmpButton.className="btn btn-choice"
         tmpButton.value = i;
         tmpButton.textContent = quizAnswerChoices[i];
-        quizAnswerContainerEl.appendChild(tmpButton)
-        // tmpButton.addEventListener('click', taskQuestionHandler);
-        // tmpListItemEl.appendChild(tmpButton);
-        
+        let tmpAnswerDiv = document.createElement("div");
+        // tmpAnswerDiv.className = ""
+        tmpAnswerDiv.appendChild(tmpButton);
+        quizContentQuestionEl.appendChild(tmpAnswerDiv)
     }
     // quizContentQuestionEl.textContent=QuestionDataObj.q;
-    quizContentQuestionEl.appendChild(quizAnswerContainerEl);
-    quizContentEl.setAttribute('value', QuestionDataObj.qid)
+    // quizContentQuestionEl.appendChild(quizAnswerContainerEl);
+    // quizContentEl.setAttribute('value', QuestionDataObj.qid)
     // return quizAnswerContainerEl;
     // quizAnswerContainerEl.appendChild(quizAnswerChoicesListEl)
     // quizContentQuestionEl.appendChild(quizAnswerContainerEl)
-    quizContentEl.appendChild(quizContentQuestionEl);
+    let oldCh = quizContentEl.firstElementChild;
+    quizContentEl.replaceChild(quizContentQuestionEl,oldCh);
     // quizContentQuestionEl = document.getElementById("quiz-question");
 }
 var createQuestionEl = function(QuestionDataObj) {
@@ -217,10 +232,89 @@ var createQuestionEl = function(QuestionDataObj) {
 // function updateChoices() {
 
 // }
+
+var taskFormHandler = function(event) {
+    event.preventDefault();
+    var inputInitials = document.querySelector("input[name='user-initials']").value;
+    // var scoreValue = document.querySelector(
+    if (!inputInitials) return
+    console.log("submit initials");
+    console.log(this.value);
+    console.log(inputInitials);
+    // localStorage.setItem("score", this.value);
+    localStorage.setItem(inputInitials, this.value);
+    welcomePage();
+}
+function createFormEl(score) {
+
+    var inputInitialsEl = document.createElement("input");
+    var inputSubmitBtn = document.createElement("button");
+    var inputCancelBtn = document.createElement("button");
+    inputInitialsEl.placeholder = "Enter your initials";
+    inputInitialsEl.name="user-initials";
+    inputInitialsEl.className = "form-text";
+    inputSubmitBtn.className = "btn";
+    inputCancelBtn.className = "btn";
+    inputSubmitBtn.type="submit";
+    inputSubmitBtn.id = "save-score";
+    inputCancelBtn.type="reset";
+    inputCancelBtn.id = "discard-score";
+
+    inputInitialsEl.setAttribute("type", "text");
+    inputCancelBtn.textContent ="Cancel";
+    inputSubmitBtn.textContent ="Submit";
+    var inputFormEl = document.createElement("form");
+    inputFormEl.value = score;
+    // inputFormEl.textContent = "Your Score: "+score;
+    quizContentEl.appendChild(inputFormEl);
+    inputFormEl.appendChild(inputInitialsEl);
+    inputFormEl.appendChild(inputSubmitBtn);
+    inputFormEl.appendChild(inputCancelBtn);
+    return inputFormEl;
+    // taskFormHandler(inputFormEl);
+    // interactEl.appendChild(inputFormEl)
+};
+// var saveHighScore()
+
 function endQuiz() {
-    interactEl.textContent = "GAME OVER";
-    quizContentEl.innerHTML = "";
+    var score = scoreValueEl.textContent;
+    // const welcomeEl = interactEl.getElementById("welcome");
+    // welcomeEl.textContent = "Game Over";
     displayMessage("Your Score: "+scoreValueEl.textContent);
+    quizContentEl.innerHTML = "";
+    let inputFormEl = createFormEl(score);
+    // inputFormEl = score;
+    // inputFormEl.prepend("<h2>Score");
+
+    // inputFormEl.addEventListener('click', function(event);
+    inputFormEl.addEventListener('submit', taskFormHandler );
+    inputFormEl.addEventListener('reset',  function() {
+
+        // inputFormEl.removeEventListener('submit',taskFormHandler);
+        welcomePage();
+    });
+    
+    
+    // signUpButton.addEventListener('click', function(event) {
+    //     event.preventDefault();
+      
+    //     var email = document.querySelector('#email').value;
+    //     var password = document.querySelector('#password').value;
+      
+    //     if (email === '') {
+    //       displayMessage('error', 'Email cannot be blank');
+    //     } else if (password === '') {
+    //       displayMessage('error', 'Password cannot be blank');
+    //     } else {
+    //       displayMessage('success', 'Registered successfully');
+      
+    //       // Save email and password to localStorage using `setItem()`
+    //       localStorage.setItem('email', email);
+    //       localStorage.setItem('password', password);
+    //       // Render the last registered email and password
+    //       renderLastRegistered();
+    //     }
+    //   });
 }
 // var StartQuiz = function(event) {
 function StartQuiz() {
@@ -230,10 +324,6 @@ function StartQuiz() {
     // interactEl.innerHTML = "";
     scoreValueEl.classList.add("hidden");
     scoreValueEl.textContent=0;
-    // var qidx=1;
-    //questionEl.setAttribute('style', );
-    // var questionTextEl = document.getElementById('question-text');
-    // choicesEl = document.createElement("form");
     var answerOptionsArrayEl = [];
     // const questionObj = QuestionArray.pop();
     // const questionHTMLObj = createQuizEl(questionObj);
@@ -290,6 +380,7 @@ function StartQuiz() {
     console.log("Quiz Start");
     // var exitCase = false;
     var timerInterval = setInterval( function() {
+
         var timeRemaining = subtractTime(1);
         if (!timeRemaining) {
             console.log("Timer Expired");
@@ -315,7 +406,7 @@ function StartQuiz() {
     //     }, 200);
     // return (timeRemaining === undefined);
 }
-var thisQid=0;
+var thisQid;
 
 function eventDelegator(event) {
     if (!(event.target.matches('.btn-choice')||event.target.matches('#start'))) return;
@@ -326,6 +417,7 @@ function eventDelegator(event) {
         interactEl.innerHTML="";
         console.log("eventDelegator recieved start 2");
         StartQuiz();
+        thisQid = 0;
     } else if (event.target.matches('.btn-choice')){
             console.log("got answer")
             // qid++;
@@ -342,17 +434,19 @@ function eventDelegator(event) {
             if (uanswer === answerKey) {
                 console.log("right answer"); 
                 addScore(10);
+                displayMessage("Correct!", )
                 continueState = 1;
             } else {
                 console.log("Wrong answer");
                 continueState = subtractTime(10);
+                displayMessage("Incorrect")
             }
             let nextQid = thisQid + 1;
             if (!QuestionArray[nextQid] || !continueState){
                 return endQuiz();
             }
             if (QuestionArray[nextQid] != undefined ) {
-                quizContentEl.innerHTML = "";
+                // quizContentEl.innerHTML = "";
                 thisQid++;
             } 
             else {
@@ -404,7 +498,7 @@ function eventDelegator(event) {
     
     // console.log(event.target)
 }
-displayTimer();
+resetTimer();
 function getEventType(event) {
     const log = document.getElementById('log');
     console.log(event.target);
